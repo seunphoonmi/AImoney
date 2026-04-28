@@ -427,7 +427,7 @@
 
     const ref = 'AMB_' + Date.now() + '_' + Math.floor(Math.random() * 99999);
 
-    var handler = PaystackPop.setup( {
+    var handler = PaystackPop.setup({
       key: 'pk_live_56cd68f5adb0e165c34545bee318900fcd3505e3'
       email: email,
       amount: 350000, // ₦3,500 in kobo
@@ -456,6 +456,59 @@
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
+  }
+</script>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2>Get the Blueprint</h2>
+    <p>Enter your details below to proceed to secure payment.</p>
+    
+    <div class="modal-field">
+      <label>Email Address</label>
+      <input type="email" id="email-address" placeholder="your@email.com" required>
+    </div>
+    
+    <button class="modal-submit" onclick="payWithPaystack()">Pay ₦3,500 Now</button>
+  </div>
+</div>
+<script>
+  // 1. Open the Modal
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden'; // Prevents background scroll
+  }
+
+  // 2. Close the Modal
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = 'auto';
+  }
+
+  // 3. Paystack Integration
+  function payWithPaystack() {
+    const email = document.getElementById('email-address').value;
+    
+    if (!email) {
+      alert("Please enter your email address.");
+      return;
+    }
+
+    const handler = PaystackPop.setup({
+      key: 'YOUR_PUBLIC_KEY_HERE', // Replace with your Public Key from Paystack Dashboard
+      email: email,
+      amount: 350000, // Amount is in kobo (3500 * 100)
+      currency: 'NGN',
+      callback: function(response) {
+        alert('Payment successful! Transaction reference: ' + response.reference);
+        closeModal();
+      },
+      onClose: function() {
+        alert('Transaction was not completed.');
+      },
+    });
+
+    handler.openIframe();
   }
 </script>
 </body>
